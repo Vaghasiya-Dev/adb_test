@@ -1,0 +1,36 @@
+services:
+  api:
+    build: .
+    container_name: api
+    command: bash -c "cd /src/rest && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    links:
+      - mongo
+    volumes:
+      - ${ADBREW_CODEBASE_PATH}/tmp:/tmp
+      - ${ADBREW_CODEBASE_PATH}:/src
+
+  app:
+    image: node:16
+    container_name: app
+    working_dir: /src/app
+    command: sh -c "npm install && npm start"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ${ADBREW_CODEBASE_PATH}:/src
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ${ADBREW_CODEBASE_PATH}/db/:/data/db
+    command: mongod --bind_ip_all
+
+    

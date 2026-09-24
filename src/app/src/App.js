@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-const API_URL = 'http://localhost:8000/todos/';
+const API_BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/+$/, '');
+const API_URL = API_BASE_URL.endsWith('/todos') ? `${API_BASE_URL}/` : `${API_BASE_URL}/todos/`;
 
 export function App() {
   const [todos, setTodos] = useState([]);

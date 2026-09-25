@@ -35,6 +35,8 @@ h2 { margin-bottom: 6px; font: 29px Georgia, serif; letter-spacing: -.7px; }
 .task-item.completed { color: #9aa199; text-decoration: line-through; }
 .check-button { width: 22px; height: 22px; padding: 0; flex: 0 0 22px; border: 1px solid #b9c0b5; border-radius: 50%; background: transparent; color: #202322; cursor: pointer; font-size: 14px; }
 .completed .check-button { border-color: #202322; background: #202322; color: #d9f06b; text-decoration: none; }
+.delete-button { margin-left: auto; padding: 0 4px; border: 0; background: transparent; color: #9aa199; cursor: pointer; font-size: 20px; line-height: 1; }
+.delete-button:hover { color: #af493f; }
 .task-dot { width: 6px; height: 6px; margin-left: auto; border-radius: 50%; background: #d9f06b; }
 .completed .task-dot { background: #c6cbc4; }
 .empty-state { padding: 42px 20px; text-align: center; border: 1px dashed #c9cec5; border-radius: 10px; color: #687269; }

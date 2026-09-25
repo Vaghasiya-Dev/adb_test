@@ -8,7 +8,6 @@ export function App() {
   const [todos, setTodos] = useState([]);
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
-  const [completedTodos, setCompletedTodos] = useState([]);
 
   const loadTodos = async () => {
     try {
@@ -27,12 +26,48 @@ export function App() {
     loadTodos();
   }, []);
 
-  const toggleTodo = (todoKey) => {
-    setCompletedTodos((completed) => (
-      completed.includes(todoKey)
-        ? completed.filter((key) => key !== todoKey)
-        : [...completed, todoKey]
-    ));
+  const updateTodo = async (todo, changes) => {
+    if (!todo.id) {
+      setError('This todo cannot be updated until it has been saved again');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}${todo.id}/`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changes),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || 'Unable to update todo');
+      }
+      setTodos((currentTodos) => currentTodos.map((currentTodo) => (
+        currentTodo.id === todo.id ? payload : currentTodo
+      )));
+      setError('');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const deleteTodo = async (todo) => {
+    if (!todo.id) {
+      setError('This todo cannot be deleted until it has been saved again');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}${todo.id}/`, { method: 'DELETE' });
+      if (!response.ok) {
+        const payload = await response.json();
+        throw new Error(payload.error || 'Unable to delete todo');
+      }
+      setTodos((currentTodos) => currentTodos.filter((currentTodo) => currentTodo.id !== todo.id));
+      setError('');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -88,7 +123,7 @@ export function App() {
 
         <section className="overview" aria-label="Task overview">
           <div><p className="section-label">Your focus</p><h2>Make today count.</h2><p className="muted">You have {todos.length} {todos.length === 1 ? 'task' : 'tasks'} on your list.</p></div>
-          <div className="progress-block"><div className="progress-label"><span>Daily progress</span><strong>{todos.length ? Math.round((completedTodos.length / todos.length) * 100) : 0}%</strong></div><div className="progress-track"><span style={{ width: `${todos.length ? (completedTodos.length / todos.length) * 100 : 0}%` }} /></div></div>
+          <div className="progress-block"><div className="progress-label"><span>Daily progress</span><strong>{todos.length ? Math.round((todos.filter((todo) => todo.completed).length / todos.length) * 100) : 0}%</strong></div><div className="progress-track"><span style={{ width: `${todos.length ? (todos.filter((todo) => todo.completed).length / todos.length) * 100 : 0}%` }} /></div></div>
         </section>
 
         <section className="task-section">
@@ -98,9 +133,8 @@ export function App() {
           ) : (
             <ul className="task-list">
               {todos.map((todo, index) => {
-                const todoKey = `${todo.description}-${index}`;
-                const isCompleted = completedTodos.includes(todoKey);
-                return <li className={`task-item${isCompleted ? ' completed' : ''}`} key={todoKey}><button className="check-button" type="button" aria-label={`Mark ${todo.description} as complete`} onClick={() => toggleTodo(todoKey)}>{isCompleted ? '✓' : ''}</button><span>{todo.description}</span><span className="task-dot" aria-hidden="true" /></li>;
+                const todoKey = todo.id || `${todo.description}-${index}`;
+                return <li className={`task-item${todo.completed ? ' completed' : ''}`} key={todoKey}><button className="check-button" type="button" aria-label={`Mark ${todo.description} as complete`} onClick={() => updateTodo(todo, { completed: !todo.completed })}>{todo.completed ? '✓' : ''}</button><span>{todo.description}</span><button className="delete-button" type="button" aria-label={`Delete ${todo.description}`} onClick={() => deleteTodo(todo)}>×</button><span className="task-dot" aria-hidden="true" /></li>;
               })}
             </ul>
           )}

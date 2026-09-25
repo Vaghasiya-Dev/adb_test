@@ -17,6 +17,8 @@ ENV MONGO_PORT 27017
 
 ENV PYTHONPATH=$PYTHONPATH:/src/
 
+CMD ["bash", "-c", "cd /src/rest && gunicorn --bind 0.0.0.0:${PORT:-8000} rest.wsgi:application"]
+
 # copy the dependencies file to the working directory
 COPY src/requirements.txt .
 

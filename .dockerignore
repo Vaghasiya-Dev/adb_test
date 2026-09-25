@@ -1,0 +1,9 @@
+.env
+.git
+.venv
+src/db
+src/app/node_modules
+src/app/build
+src/app/.env
+src/app/.eslintcache
+src/rest/rest/__pycache__

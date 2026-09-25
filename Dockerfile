@@ -24,3 +24,5 @@ COPY src/requirements.txt .
 
 # install dependencies
 RUN pip install -r requirements.txt
+
+COPY src /src

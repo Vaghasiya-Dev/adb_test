@@ -9,6 +9,7 @@ from pymongo import MongoClient
 mongo_uri = os.getenv('MONGO_URI') or os.getenv('MONGODB_URI') or (
     'mongodb://' + os.environ['MONGO_HOST'] + ':' + os.environ['MONGO_PORT']
 )
+mongo_uri = mongo_uri.strip().strip('"').strip("'")
 db = MongoClient(mongo_uri)['test_db']
 
 class TodoListView(APIView):

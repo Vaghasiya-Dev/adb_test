@@ -6,7 +6,7 @@ from rest_framework import status
 import json, os
 from pymongo import MongoClient
 
-mongo_uri = os.getenv('MONGO_URI') or (
+mongo_uri = os.getenv('MONGO_URI') or os.getenv('MONGODB_URI') or (
     'mongodb://' + os.environ['MONGO_HOST'] + ':' + os.environ['MONGO_PORT']
 )
 db = MongoClient(mongo_uri)['test_db']

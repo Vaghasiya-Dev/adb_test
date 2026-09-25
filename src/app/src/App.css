@@ -35,10 +35,20 @@ h2 { margin-bottom: 6px; font: 29px Georgia, serif; letter-spacing: -.7px; }
 .task-item.completed { color: #9aa199; text-decoration: line-through; }
 .check-button { width: 22px; height: 22px; padding: 0; flex: 0 0 22px; border: 1px solid #b9c0b5; border-radius: 50%; background: transparent; color: #202322; cursor: pointer; font-size: 14px; }
 .completed .check-button { border-color: #202322; background: #202322; color: #d9f06b; text-decoration: none; }
-.delete-button { margin-left: auto; padding: 0 4px; border: 0; background: transparent; color: #9aa199; cursor: pointer; font-size: 20px; line-height: 1; }
+.task-description { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.task-actions { width: 86px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-left: auto; flex: 0 0 86px; }
+.edit-button, .delete-button { width: 22px; height: 28px; padding: 0; border: 0; background: transparent; color: #9aa199; cursor: pointer; font-size: 17px; line-height: 28px; }
+.edit-button:hover { color: #81933b; }
+.delete-button { font-size: 21px; }
 .delete-button:hover { color: #af493f; }
-.task-dot { width: 6px; height: 6px; margin-left: auto; border-radius: 50%; background: #d9f06b; }
+.task-dot { width: 6px; height: 6px; border-radius: 50%; background: #d9f06b; }
 .completed .task-dot { background: #c6cbc4; }
+.edit-form { min-width: 0; display: flex; align-items: center; gap: 7px; flex: 1; }
+.edit-form input { min-width: 0; flex: 1; padding: 8px 10px; border: 1px solid #81933b; border-radius: 5px; outline: none; background: #fffdf8; color: #202322; font: inherit; text-decoration: none; }
+.save-button, .cancel-button { padding: 7px 9px; border: 0; border-radius: 5px; cursor: pointer; font: 12px 'Trebuchet MS', sans-serif; }
+.save-button { background: #202322; color: #f6f3ed; }
+.cancel-button { background: #e8e7df; color: #525a52; }
+.edit-form + .task-actions { width: auto; flex-basis: auto; }
 .empty-state { padding: 42px 20px; text-align: center; border: 1px dashed #c9cec5; border-radius: 10px; color: #687269; }
 .empty-icon { color: #a9bb49; font-size: 26px; }
 .empty-state h3 { margin: 12px 0 5px; color: #303631; font: 22px Georgia, serif; }

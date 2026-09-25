@@ -8,6 +8,8 @@ export function App() {
   const [todos, setTodos] = useState([]);
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
+  const [editingTodoId, setEditingTodoId] = useState(null);
+  const [editDescription, setEditDescription] = useState('');
 
   const loadTodos = async () => {
     try {
@@ -46,8 +48,30 @@ export function App() {
         currentTodo.id === todo.id ? payload : currentTodo
       )));
       setError('');
+      return true;
     } catch (err) {
       setError(err.message);
+      return false;
+    }
+  };
+
+  const startEditing = (todo) => {
+    setEditingTodoId(todo.id);
+    setEditDescription(todo.description);
+    setError('');
+  };
+
+  const saveEdit = async (event, todo) => {
+    event.preventDefault();
+    const trimmedDescription = editDescription.trim();
+    if (!trimmedDescription) {
+      setError('Please enter a todo description');
+      return;
+    }
+
+    if (await updateTodo(todo, { description: trimmedDescription })) {
+      setEditingTodoId(null);
+      setEditDescription('');
     }
   };
 
@@ -134,7 +158,21 @@ export function App() {
             <ul className="task-list">
               {todos.map((todo, index) => {
                 const todoKey = todo.id || `${todo.description}-${index}`;
-                return <li className={`task-item${todo.completed ? ' completed' : ''}`} key={todoKey}><button className="check-button" type="button" aria-label={`Mark ${todo.description} as complete`} onClick={() => updateTodo(todo, { completed: !todo.completed })}>{todo.completed ? '✓' : ''}</button><span>{todo.description}</span><button className="delete-button" type="button" aria-label={`Delete ${todo.description}`} onClick={() => deleteTodo(todo)}>×</button><span className="task-dot" aria-hidden="true" /></li>;
+                return <li className={`task-item${todo.completed ? ' completed' : ''}`} key={todoKey}>
+                  <button className="check-button" type="button" aria-label={`Mark ${todo.description} as complete`} onClick={() => updateTodo(todo, { completed: !todo.completed })}>{todo.completed ? '✓' : ''}</button>
+                  {editingTodoId === todo.id ? (
+                    <form className="edit-form" onSubmit={(event) => saveEdit(event, todo)}>
+                      <input aria-label={`Edit ${todo.description}`} value={editDescription} onChange={(event) => setEditDescription(event.target.value)} autoFocus />
+                      <button className="save-button" type="submit">Save</button>
+                      <button className="cancel-button" type="button" onClick={() => setEditingTodoId(null)}>Cancel</button>
+                    </form>
+                  ) : <span className="task-description">{todo.description}</span>}
+                  <span className="task-actions">
+                    <button className="edit-button" type="button" aria-label={`Edit ${todo.description}`} onClick={() => startEditing(todo)}>✎</button>
+                    <button className="delete-button" type="button" aria-label={`Delete ${todo.description}`} onClick={() => deleteTodo(todo)}>×</button>
+                    <span className="task-dot" aria-hidden="true" />
+                  </span>
+                </li>;
               })}
             </ul>
           )}
